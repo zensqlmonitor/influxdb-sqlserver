@@ -1,0 +1,16 @@
+[Unit]
+Description=Collect Microsoft SQL Server metrics for reporting into InfluxDB
+After=network.target
+
+[Service]
+CPUShares=512
+MemoryLimit=128M
+Environment='STDOUT=/dev/null'
+Environment='STDERR=/var/log/influxdb-sqlserver/influxdb-sqlserver.log'
+ExecStart=/opt/influxdb-sqlserver/influxdb-sqlserver -config /etc/influxdb-sqlserver/influxdb-sqlserver.conf >> ${STDOUT} 2>> ${STDERR}
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=influxdb-sqlserver.service

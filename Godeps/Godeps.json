@@ -1,0 +1,19 @@
+{
+	"ImportPath": "github.com/zensqlmonitor/influxdb-sqlserver",
+	"GoVersion": "go1.5",
+	"Deps": [
+		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.1.0-21-g056c9bc",
+			"Rev": "056c9bc7be7190eaa7715723883caffa5f8fa3e4"
+		},
+		{
+			"ImportPath": "github.com/zensqlmonitor/go-mssqldb",
+			"Rev": "ffe5510c6fa5e15e6d983210ab501c815b56b363"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/md4",
+			"Rev": "f18420efc3b4f8e9f3d51f6bd2476e92c46260e9"
+		}
+	]
+}

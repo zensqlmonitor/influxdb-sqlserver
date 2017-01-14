@@ -60,7 +60,7 @@ result = REPLACE(cc.counter_name + CASE WHEN LEN(cc.instance_name) > 0 THEN ' | 
     When 272696576 Then cc.cntr_value - pc.cntr_value -- Per Second
     When 1073874176 Then IsNull(Cast(cc.cntr_value - pc.cntr_value as Money) / NullIf(cbc.cntr_value - pbc.cntr_value, 0), 0) -- Avg
     When 1073939712 Then cc.cntr_value - pc.cntr_value -- Base
-    Else cc.cntr_value End as int) as varchar(16))
+    Else cc.cntr_value End as bigint) as varchar(19))
 --+ ' ' + CAST(DATEDIFF(SECOND,{d '1970-01-01'}, GETDATE()) as varchar(32)) + '000000000' 
 FROM #CCounters cc
 INNER JOIN #PCounters pc On cc.object_name = pc.object_name

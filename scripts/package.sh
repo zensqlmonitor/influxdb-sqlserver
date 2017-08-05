@@ -20,6 +20,7 @@ INSTALL_ROOT_DIR=/opt/influxdb-sqlserver
 CONFIG_ROOT_DIR=/etc/influxdb-sqlserver
 CONFIG_FILE=influxdb-sqlserver.conf
 PROG_LOG_DIR=/var/log/influxdb-sqlserver
+SQLSCRIPTS_DIR_SOURCE=sqlscripts/
 SQLSCRIPTS_DIR=/usr/local/influxdb-sqlserver/sqlscripts/
 LOGROTATE_DIR=/etc/logrotate.d/
 
@@ -38,7 +39,7 @@ MAINTAINER=sqlzen@hotmail.com
 VENDOR=sqlzenmonitor
 DESCRIPTION="Collect Microsoft SQL Server metrics for reporting into InfluxDB"
 PKG_DEPS=(coreutils)
-GO_VERSION="go1.5"
+GO_VERSION="go1.8"
 GOPATH_INSTALL=
 BINS=(
     influxdb-sqlserver
@@ -138,24 +139,12 @@ do_build() {
 	echo "Copying configuration file..."
 	cp ././$CONFIG_FILE $GOPATH_INSTALL/bin
 	if [ $? -ne 0 ]; then
-        echo "Build failed, unable to Copying configuration file -- aborting"
+        echo "Build failed, unable to copy configuration file -- aborting"
         cleanup_exit 1
     fi
 	
 	echo "Replacing parameters in configuration file..."
 	sed -i 's|logfile="collectsql.log"|logfile="/var/log/influxdb-sqlserver/collectsql.log"|g' $GOPATH_INSTALL/bin/$CONFIG_FILE
-	if [ $? -ne 0 ]; then
-        echo "Build failed, unable to update configuration file -- aborting"
-        cleanup_exit 1
-    fi
-	
-	sed -i 's|sqlscriptspath="sqlscripts/"|sqlscriptspath="/usr/local/influxdb-sqlserver/sqlscripts/"|g' $GOPATH_INSTALL/bin/$CONFIG_FILE
-	if [ $? -ne 0 ]; then
-        echo "Build failed, unable to update configuration file -- aborting"
-        cleanup_exit 1
-    fi
-	
-	sed -i 's|sqlscriptsresultpath="sqlscripts/tmp/"|sqlscriptsresultpath="/usr/local/influxdb-sqlserver/sqlscripts/tmp/"|g' $GOPATH_INSTALL/bin/$CONFIG_FILE
 	if [ $? -ne 0 ]; then
         echo "Build failed, unable to update configuration file -- aborting"
         cleanup_exit 1
@@ -257,7 +246,7 @@ if [ $? -ne 0 ]; then
 fi
 echo "$CONFIG_FILE copied to $TMP_WORK_DIR$CONFIG_ROOT_DIR"
 
-cp sqlscripts/*  $TMP_WORK_DIR/$SQLSCRIPTS_DIR  2>&1 | grep 'omitting directory'   
+cp -R $SQLSCRIPTS_DIR_SOURCE/* $TMP_WORK_DIR/$SQLSCRIPTS_DIR   
 if [ $? -ne 0 ]; then
     echo "Failed to copy T-SQL scripts to packaging directory -- aborting."
     cleanup_exit 1
@@ -316,7 +305,8 @@ fi
 COMMON_FPM_ARGS="-C $TMP_WORK_DIR --vendor $VENDOR --url $URL --license $LICENSE \
                 --maintainer $MAINTAINER --after-install $POST_INSTALL_PATH \
                 --name influxdb-sqlserver --provides influxdb-sqlserver --version $VERSION \
-				--config-files $CONFIG_ROOT_DIR --package ./packages"
+				--config-files $CONFIG_ROOT_DIR --package ./$rpm_package"
+        
 $rpm_args fpm -s dir -t rpm --description "$DESCRIPTION" $COMMON_FPM_ARGS
 if [ $? -ne 0 ]; then
     echo "Failed to create RPM package -- aborting."
@@ -324,6 +314,11 @@ if [ $? -ne 0 ]; then
 fi
 echo "RPM package created successfully."
 
+COMMON_FPM_ARGS="-C $TMP_WORK_DIR --vendor $VENDOR --url $URL --license $LICENSE \
+                --maintainer $MAINTAINER --after-install $POST_INSTALL_PATH \
+                --name influxdb-zabbix --provides influxdb-zabbix --version $VERSION \
+				        --config-files $CONFIG_ROOT_DIR --deb-no-default-config-files --package ./$debian_package"
+                                                        
 fpm -s dir -t deb $deb_args --description "$DESCRIPTION" $COMMON_FPM_ARGS
 if [ $? -ne 0 ]; then
     echo "Failed to create Debian package -- aborting."

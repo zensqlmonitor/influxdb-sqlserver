@@ -1,12 +1,7 @@
 // Package config provides the influxdb-sqlserver specific configuration options.
 package config
 
-import (
-// "fmt"
-// "net"
-// "strconv"
-// "strings"
-)
+import ()
 
 // Defaults for config variables which are not set
 const (
@@ -22,7 +17,7 @@ const (
 	DefaultDailyRotate  bool   = true
 	DefaultMaxDays      int    = 7
 
-	DefaultSqlScriptPath string = "sqlscripts/"
+	DefaultSqlScriptPath string = "/usr/local/influxdb-sqlserver/sqlscripts/"
 
 	DefaultPollingInterval        int = 15
 	DefaultPollingIntervalIfError int = 60
@@ -30,7 +25,7 @@ const (
 	DefaultInfluxDBUrl       string = "http://localhost:8086"
 	DefaultInfluxDBTimeOut   int    = 0
 	DefaultInfluxDBDatabase  string = "SQLSERVER"
-	DefaultInfluxDBPrecision string = "s"
+	DefaultInfluxDBPrecision string = "ms"
 )
 
 type TOMLConfig struct {

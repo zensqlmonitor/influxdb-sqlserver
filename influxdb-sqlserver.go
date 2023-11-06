@@ -284,8 +284,8 @@ func init() {
 //
 func connectionString(server cfg.Server) string {
 	return fmt.Sprintf(
-		"Server=%s;Port=%v;User Id=%s;Password=%s;app name=influxdb-sqlserver;log=1",
-		server.IP, server.Port, server.Username, server.Password)
+		"Server=%s;Port=%v;User Id=%s;Password=%s;app name=influxdb-sqlserver;log=1;Encrypt=%t;Trust Server Certificate=%t;",
+		server.IP, server.Port, server.Username, server.Password, server.Encrypt, server.TrustServerCertificate)
 }
 
 //

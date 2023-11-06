@@ -26,6 +26,9 @@ const (
 	DefaultInfluxDBTimeOut   int    = 0
 	DefaultInfluxDBDatabase  string = "SQLSERVER"
 	DefaultInfluxDBPrecision string = "ms"
+
+	DefaultServerEncrypt bool = false
+	DefaultServerTrustServerCertificate bool = false
 )
 
 type TOMLConfig struct {
@@ -65,6 +68,8 @@ type Server struct {
 	Port     int
 	Username string
 	Password string
+	Encrypt  bool
+	TrustServerCertificate bool
 }
 type script struct {
 	Name     string
